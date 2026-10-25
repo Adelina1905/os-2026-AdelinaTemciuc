@@ -1,6 +1,6 @@
 # Lab 7 - Three Small Programs
 
-Temciuc Adelina, FAF-242
+Done by: st. gr. FAF-242, Temciuc Adelina
 
 ## Part 1 - fork + exec + wait
 
@@ -9,35 +9,35 @@ gcc -Wall -Wextra -o run run.c && ./run
 ```
 
 ```
-parent: my PID is 12479
-child:  my PID is 12480, my parent is 12479
-total 40
--rw-r--r--. 1 adelina adelina  1326 Oct 23 10:46 pipeline3.c
--rw-r--r--. 1 adelina adelina  1013 Oct 23 10:46 pipeline.c
--rw-r--r--. 1 adelina adelina   703 Oct 23 10:46 redirect.c
--rw-r--r--. 1 adelina adelina  3112 Oct 23 10:46 report.md
--rwxr-xr-x. 1 adelina adelina 12968 Oct 23 10:49 run
--rw-r--r--. 1 adelina adelina   911 Oct 23 10:42 run.c
--rw-r--r--. 1 adelina adelina   979 Oct 23 10:46 zombie.c
-parent: child 12480 ended with status 0
+parent: my PID is 46466
+child:  my PID is 46467, my parent is 46466
+total 52
+-rwxr-xr-x. 1 adelina adelina 12872 Oct 25 17:47 pipeline3
+-rw-r--r--. 1 adelina adelina  1326 Oct 25 17:45 pipeline3.c
+-rw-r--r--. 1 adelina adelina  1013 Oct 25 17:47 pipeline.c
+-rw-r--r--. 1 adelina adelina   703 Oct 25 17:45 redirect.c
+-rwxr-xr-x. 1 adelina adelina 12968 Oct 25 17:47 run
+-rw-r--r--. 1 adelina adelina   911 Oct 25 17:46 run.c
+-rw-r--r--. 1 adelina adelina   979 Oct 25 17:45 zombie.c
+parent: child 46467 ended with status 0
 ```
 
 With `date` instead of `ls`:
 
 ```
-parent: my PID is 12488
-child:  my PID is 12489, my parent is 12488
-Fri Oct 23 10:49:08 AM EEST 2026
-parent: child 12489 ended with status 0
+parent: my PID is 45754
+child:  my PID is 45755, my parent is 45754
+Sun Oct 25 05:46:11 PM EET 2026
+parent: child 45755 ended with status 0
 ```
 
 With `nosuchprog`:
 
 ```
-parent: my PID is 12495
-child:  my PID is 12496, my parent is 12495
+parent: my PID is 45824
+child:  my PID is 45825, my parent is 45824
 exec: No such file or directory
-parent: child 12496 ended with status 127
+parent: child 45825 ended with status 127
 ```
 
 **1. Why is `perror("exec")` printed only with nosuchprog?**
@@ -46,7 +46,7 @@ so the lines after `execlp` never run. With `nosuchprog` exec fails, so it comes
 and goes to the next line, which is `perror`.
 
 **2. Which number does the child print as "my parent"?**
-It prints 12479, which is the PID of the parent (the `./run` program). It is the same
+It prints 46466, which is the PID of the parent (the `./run` program). It is the same
 number the parent printed in the first line.
 
 **3. What status does the parent see?**
@@ -63,16 +63,19 @@ sleep 2; ps -o pid,ppid,stat,cmd
 
 ```
     PID    PPID STAT CMD
-  12566    7287 Ss   bash
-  12572   12566 S    ./zombie
-  12574   12572 Z    [ls] <defunct>
+  45857   27608 Ss   bash
+  45888   45857 S    ./zombie
+  45890   45888 Z    [ls] <defunct>
+  45900   45857 R+   ps -o pid,ppid,stat,cmd
 ```
 
 After 20 seconds:
 
 ```
     PID    PPID STAT CMD
-  12566    7287 Ss   bash
+  45857   27608 Ss   bash
+  45957   45857 R+   ps -o pid,ppid,stat,cmd
+[1]   Done                    ./zombie > /dev/null
 ```
 
 **1. Which letter does ls have in STAT?**
@@ -93,9 +96,9 @@ head -3 out.txt
 ```
 open gave descriptor 1
 done: the listing is in out.txt
-total 56
--rw-r--r--. 1 adelina adelina     0 Oct 23 10:49 out.txt
--rw-r--r--. 1 adelina adelina  1326 Oct 23 10:46 pipeline3.c
+total 68
+-rw-r--r--. 1 adelina adelina     0 Oct 25 17:46 out.txt
+-rw-r--r--. 1 adelina adelina  1326 Oct 25 17:45 pipeline3.c
 ```
 
 **1. Which number did open give, and why?**
@@ -117,20 +120,28 @@ ls /etc | wc -l
 ```
 
 ```
-279
-279
+282
+282
 ```
 
-After making `close(p[1]);` a comment in the parent, the program does not stop and I
-had to press Ctrl-C. While it was stuck, only `wc` was still alive:
+After making `close(p[1]);` a comment in the parent, the program does not stop. I ran it
+in the background, and while it was stuck only `wc` was still alive:
 
 ```
+./pipeline &
+sleep 2; ps -o pid,ppid,stat,cmd --ppid $!
     PID    PPID STAT CMD
-  12536   12534 S    wc -l
+  46181   46178 S    wc -l
+kill -INT $!
+282
+[1]   Interrupt               ./pipeline
 ```
+
+`kill -INT` sends the same signal as Ctrl-C. When the parent died, its copy of `p[1]` was
+closed, so `wc` finally got EOF and printed 282.
 
 **1. Did they give the same number?**
-Yes, both printed 279.
+Yes, both printed 282.
 
 **2. Which child never ends?**
 `wc`. The `ls` child finishes normally.
@@ -143,9 +154,9 @@ still has the write end `p[1]` open.
 
 ```
 $ ./pipeline3
-221
+248
 $ ls /usr/bin | grep x | wc -l
-221
+248
 ```
 
 Both numbers are the same.

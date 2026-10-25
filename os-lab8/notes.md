@@ -1,6 +1,6 @@
 # Lab 8 - The Same Calls, Inside Your Own OS (xv6)
 
-Temciuc Adelina, FAF-242
+Done by: st. gr. FAF-242, Temciuc Adelina
 
 I added `user/run.c` and `user/pingpong.c` to xv6, and these two lines to UPROGS
 in the Makefile:
@@ -67,11 +67,11 @@ Because after the failed exec, in xv6 I have `exit(1)` and in Lab 7 on Linux I h
 
 ```
 $ pingpong
-6: received ping
-5: received pong
+4: received ping
+3: received pong
 ```
 
-The child (pid 6) prints ping first, and then the parent (pid 5) prints pong.
+The child (pid 4) prints ping first, and then the parent (pid 3) prints pong.
 
 **1. Why do we need TWO pipes?**
 A pipe goes only one way, from the write end to the read end. If we use one pipe for

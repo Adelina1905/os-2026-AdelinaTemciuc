@@ -1,6 +1,6 @@
 # Lab 2 - Meet the OS You Will Build
 
-Temciuc Adelina, FAF-242
+Done by: st. gr. FAF-242, Temciuc Adelina
 
 ## Part 2 - Use xv6 as the Unix it is
 
@@ -51,3 +51,7 @@ has normal programs that ask the kernel for things through system calls.
 `user/sleep.c` checks that it got exactly one argument, otherwise it prints
 `usage: sleep <ticks>`, and then calls the `sleep()` system call with that number
 of ticks. I added `$U/_sleep\` to UPROGS in the Makefile.
+
+In August 2025 the xv6 authors renamed the system call `sleep()` to `pause()`, so on the
+current xv6 the file calls `pause()` (see Lab 4). Tested inside xv6: `sleep 10` pauses and
+returns to the prompt, `sleep` alone prints the usage message (Figure 4.4 in the report).
